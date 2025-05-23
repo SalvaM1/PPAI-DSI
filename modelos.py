@@ -1,4 +1,5 @@
 # modelos.py
+from datetime import datetime
 
 class EventoSismico:
     def __init__(self, fecha_hora_fin, fecha_hora_ocurrencia,
@@ -6,6 +7,7 @@ class EventoSismico:
                  latitud_hipocentro, longitud_hipocentro,
                  valor_magnitud, clasificacion, magnitud,
                  origen_generacion, alcance):
+        
         self.fecha_hora_fin = fecha_hora_fin
         self.fecha_hora_ocurrencia = fecha_hora_ocurrencia
         self.latitud_epicentro = latitud_epicentro
@@ -17,6 +19,35 @@ class EventoSismico:
         self.magnitud = magnitud
         self.origen_generacion = origen_generacion
         self.alcance = alcance
+
+        # Lista de cambios de estado
+        self.cambios_estado = []
+
+    def agregar_cambio_estado(self, cambio_estado):
+        self.cambios_estado.append(cambio_estado)
+
+    def obtener_estado_actual(self):
+        if self.cambios_estado:
+            return self.cambios_estado[-1].estado
+        return None
+    
+class Estado:
+    def __init__(self, ambito, nombre_estado):
+        self.ambito = ambito
+        self.nombre_estado = nombre_estado
+
+    def __str__(self):
+        return f"{self.ambito} - {self.nombre_estado}"
+
+class CambioEstado:
+    def __init__(self, estado, fecha_hora_inicio, fecha_hora_fin=None):
+        self.estado = estado  # instancia de Estado
+        self.fecha_hora_inicio = fecha_hora_inicio
+        self.fecha_hora_fin = fecha_hora_fin
+
+    def __str__(self):
+        fin = self.fecha_hora_fin if self.fecha_hora_fin else "actual"
+        return f"Cambio a '{self.estado}' desde {self.fecha_hora_inicio} hasta {fin}"
 
 class ClasificacionSismo:
     def __init__(self, km_desde, km_hasta, nombre):
@@ -66,3 +97,9 @@ class SerieTemporal:
         self.fecha_hora_registro = fecha_hora_registro
         self.frecuencia_muestreo = frecuencia_muestreo
         self.muestras = muestras  # lista de MuestraSismica
+
+
+class Interfaz:
+    def mostrar_eventos(self, eventos):
+        from flask import render_template
+        return render_template('eventos.html', eventos=eventos)

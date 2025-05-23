@@ -1,0 +1,35 @@
+body {
+    background-color: #ebe9da;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #096B68;
+    text-align: center;
+    margin-top: 50px;
+}
+
+hr {
+    border-top: 3px solid #129990;
+    width: 100%;
+    margin: 20px auto;
+}
+
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+}
+
+#botonRevisionManual {
+    background-color: #129990;
+    border: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#botonRevisionManual:hover {
+    background-color: #096B68;
+}
