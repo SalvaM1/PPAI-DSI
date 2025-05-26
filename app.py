@@ -1,33 +1,49 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, abort
 from datos import crear_eventos
 from gestor import Gestor
-from modelos import Interfaz
+from modelos import *
 
-# Crear datos al iniciar la aplicación
-eventos = crear_eventos()
-
-# Inicializar Flask y componentes
 app = Flask(__name__)
+
+# Cargamos los eventos y creamos el gestor
+eventos = crear_eventos()
+# Si crear_eventos no asigna id, hazlo aquí:
+for idx, e in enumerate(eventos, start=1):
+    setattr(e, 'id', idx)
+
 gestor = Gestor(eventos)
 interfaz = Interfaz()
 
 @app.route('/')
 def index():
-    # Muestra la página inicial con el botón
     return render_template('index.html')
 
 @app.route('/eventos')
 def mostrar_eventos():
-    # Obtiene eventos pendientes y renderiza la tabla
     eventos_pendientes = gestor.solicitar_seleccion()
     return interfaz.mostrar_eventos(eventos_pendientes)
 
-@app.route('/revisar/<int:evento_id>', methods=['POST'])
-def revisar_evento(evento_id):
-    # PRIMERO CAMBIAR EL ESTADO DEL EVENTO SELECCIONADO
-    # Lógica para procesar la revisión (cambiar estado, etc.)
-    # Aquí podrías usar gestor.agregar_cambio_estado(...) o similar
-    return f"Evento {evento_id} seleccionado para revisión."
+@app.route('/revisar', methods=['GET'])
+def revisar_evento():
+    # 1) Leer id desde la query string
+    id_str = request.args.get('id')
+    if not id_str:
+        abort(400, "Falta el parámetro 'id'")
+    try:
+        evento_id = int(id_str)
+    except ValueError: 
+        abort(400, "Parámetro 'id' inválido")
+
+    # 2) Buscar el evento
+    evento = next((e for e in gestor.eventos if getattr(e, 'id', None) == evento_id), None)
+    if not evento:
+        abort(404, f"No existe evento con id {evento_id}")
+    
+    # 3) Cambiar estado del evento a bloqueado creando un nuevo cambio estado para el evento que tiene el id de la uri, usando un metodo en la clase gestor
+    gestor.bloquearEventoSismico(evento)   
+
+    # 3) Renderizar la plantilla de detalle
+    return render_template('evento_detalle.html', e=evento)
 
 if __name__ == '__main__':
     app.run(debug=True)

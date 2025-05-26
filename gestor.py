@@ -1,3 +1,5 @@
+from modelos import *
+
 class Gestor:
     def __init__(self, eventos):
         self.eventos = eventos  # lista de EventoSismico instances
@@ -9,3 +11,10 @@ class Gestor:
         # ordena por fecha de ocurrencia
         pendientes.sort(key=lambda e: e.fecha_hora_ocurrencia)
         return pendientes
+
+    def bloquearEventoSismico(self, evento):
+        """
+        Simplemente pasamos el Estado a la lista de cambios del evento.
+        """
+        estado_bloqueado = Estado('sismo', 'bloqueado')
+        evento.agregar_cambio_estado(estado_bloqueado)

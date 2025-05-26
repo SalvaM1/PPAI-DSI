@@ -2,12 +2,12 @@
 from datetime import datetime
 
 class EventoSismico:
-    def __init__(self, fecha_hora_fin, fecha_hora_ocurrencia,
+    def __init__(self, id, fecha_hora_fin, fecha_hora_ocurrencia,
                  latitud_epicentro, longitud_epicentro,
                  latitud_hipocentro, longitud_hipocentro,
                  valor_magnitud, clasificacion, magnitud,
                  origen_generacion, alcance):
-        
+        self.id = id
         self.fecha_hora_fin = fecha_hora_fin
         self.fecha_hora_ocurrencia = fecha_hora_ocurrencia
         self.latitud_epicentro = latitud_epicentro
@@ -19,17 +19,31 @@ class EventoSismico:
         self.magnitud = magnitud
         self.origen_generacion = origen_generacion
         self.alcance = alcance
+        self.series_temporales = []
 
         # Lista de cambios de estado
         self.cambios_estado = []
 
-    def agregar_cambio_estado(self, cambio_estado):
-        self.cambios_estado.append(cambio_estado)
+    def agregar_cambio_estado(self, estado):
+        self.cambios_estado.append(estado)
 
     def obtener_estado_actual(self):
-        if self.cambios_estado:
-            return self.cambios_estado[-1].estado
-        return None
+        """
+        Devuelve siempre una instancia de Estado:
+         - Si el último elemento es un CambioEstado, extrae su .estado
+         - Si ya es un Estado, lo devuelve directamente
+        """
+        if not self.cambios_estado:
+            return None
+
+        ultimo = self.cambios_estado[-1]
+        # Importa la clase para evitar problemas circulares
+        from modelos import CambioEstado
+
+        if isinstance(ultimo, CambioEstado):
+            return ultimo.estado
+        else:
+            return ultimo
     
 class Estado:
     def __init__(self, ambito, nombre_estado):
