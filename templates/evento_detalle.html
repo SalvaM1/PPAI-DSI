@@ -1,80 +1,106 @@
+<!-- templates/evento_detalle.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/detalle.css">
-    <title>Estación Sismológica</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='detalle.css') }}">
+  <title>Estación Sismológica</title>
 </head>
-<body>
-    <h1>Evento Sísmico Seleccionado</h1>
-    <hr>
-    <div class="alert alert-success alert-dismissible fade show ms-2 mx-3" role="alert">
-        <strong>Sismograma generado</strong>
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Cerrar"></button>
-      </div>    
-    <div class="card-body">
-        <!-- Datos generales del evento sísmico -->
-        <h5>Datos Sismicos</h5>
-        <table class="table table-bordered">
-            <tr>
-                <th>Alcance</th>
-                <td>Regional</td>
-            </tr>
-            <tr>
-                <th>Clasificación</th>
-                <td>Terremoto tectónico</td>
-            </tr>
-            <tr>
-                <th>Origen</th>
-                <td>Falla geológica activa</td>
-            </tr>
-        </table>
+<body class="p-4">
 
-        <!-- Series temporales agrupadas en una sola tabla -->
-        <h5 class="mt-4">Serie Temporal - Estación: </h5> <!-- TODO: Aquí se puede agregar el nombre de la estación -->
+  <h1 class="mb-3">Evento Sísmico Seleccionado</h1>
+  <hr>
 
-        <table class="table table-sm table-striped">
-            <thead>
-                <tr>
-                    <th>Numero de muestra</th>
-                    <th>Instante (s)</th>
-                    <th>Velocidad de onda (m/s)</th>
-                    <th>Frecuencia (Hz)</th>
-                    <th>Longitud de onda (m)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Ejemplos para estación Córdoba -->
-                <tr>
-                    <td>Muestra 1</td>
-                    <td>0.1</td>
-                    <td>1500</td>
-                    <td>5</td>
-                    <td>300</td>
-                </tr>
-                <tr>
-                    <td>Muestra 2 </td>
-                    <td>0.2</td>
-                    <td>1520</td>
-                    <td>5.2</td>
-                    <td>292</td>
-                </tr>
-                <tr>
-                    <td>Muestra 3</td>
-                    <td>0.1</td>
-                    <td>1400</td>
-                    <td>4.8</td>
-                    <td>291.7</td>
-                </tr>
-            </tbody>
-        </table>
+  <!-- ALERTA DISMISSIBLE -->
+  <div
+    class="alert alert-success alert-dismissible fade show mx-3 mb-4 position-relative"
+    role="alert"
+  >
+    <strong>Sismograma generado</strong>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Cerrar"
+    ></button>
+  </div>
+
+  <!-- Datos Sísmicos (sin “tarjeta” blanca de fondo) -->
+  <div class="mb-5">
+    <h5 class="mb-3">Datos Sísmicos</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <tr>
+          <th>Alcance</th>
+          <td>{{ e.alcance }}</td>
+        </tr>
+        <tr>
+          <th>Clasificación</th>
+          <td>{{ e.clasificacion }}</td>
+        </tr>
+        <tr>
+          <th>Origen</th>
+          <td>{{ e.origen_generacion }}</td>
+        </tr>
+      </table>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Series temporales -->
+  {% for serie in e.series_temporales %}
+    <h5 class="mt-4 mb-2">
+      Serie Temporal {{ loop.index }} – Inicio: {{ serie.fecha_hora_inicio_muestras }}
+    </h5>
+    <div class="table-responsive mb-5">
+      <table class="table table-sm table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Numero de muestra</th>
+            <th>Instante (s)</th>
+            <th>Velocidad de onda (m/s)</th>
+            <th>Frecuencia (Hz)</th>
+            <th>Longitud de onda (m)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for muestra in serie.muestras %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>
+                {{ (muestra.fecha_hora_muestra - serie.fecha_hora_inicio_muestras).total_seconds() }}
+              </td>
+              <td>
+                {% for det in muestra.detalles %}
+                  {% if det.tipo_dato.denominacion == 'velocidad de onda' %}
+                    {{ det.valor }}
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td>
+                {% for det in muestra.detalles %}
+                  {% if det.tipo_dato.denominacion == 'frecuencia' %}
+                    {{ det.valor }}
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td>
+                {% for det in muestra.detalles %}
+                  {% if det.tipo_dato.denominacion == 'longitud' %}
+                    {{ det.valor }}
+                  {% endif %}
+                {% endfor %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endfor %}
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

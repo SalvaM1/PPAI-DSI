@@ -1,5 +1,5 @@
 # datos.py
-
+import random
 from datetime import datetime, timedelta
 from modelos import (
     EventoSismico,
@@ -10,6 +10,8 @@ from modelos import (
     DetalleMuestraSismica,
     TipoDeDato
 )
+
+
 
 def crear_eventos():
     # ---- 1) Definir estados ----
@@ -91,10 +93,11 @@ def crear_eventos():
             # Hasta 2 muestras por serie
             for m_idx in range(2):
                 timestamp_muestra = inicio_muestreo + timedelta(seconds=m_idx * 5)
+                nroRandom = random.random()
                 detalles = [
-                    DetalleMuestraSismica(valor=round(0.1 * (s_idx+1) * (m_idx+1), 2), tipo_dato=tipo_longitud),
-                    DetalleMuestraSismica(valor=round(1.0 * (s_idx+1) * (m_idx+1), 2), tipo_dato=tipo_frecuencia),
-                    DetalleMuestraSismica(valor=round(500.0 * (s_idx+1) * (m_idx+1), 2), tipo_dato=tipo_velocidad)
+                    DetalleMuestraSismica(valor=round((0.1 * (s_idx+1) * (m_idx+1)) * nroRandom, 2), tipo_dato=tipo_longitud),
+                    DetalleMuestraSismica(valor=round((1.0 * (s_idx+1) * (m_idx+1)) * nroRandom, 2), tipo_dato=tipo_frecuencia),
+                    DetalleMuestraSismica(valor=round((500.0 * (s_idx+1) * (m_idx+1)) * nroRandom, 2), tipo_dato=tipo_velocidad)
                 ]
                 muestra = MuestraSismica(
                     fecha_hora_muestra = timestamp_muestra,
