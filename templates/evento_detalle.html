@@ -99,6 +99,86 @@
       </table>
     </div>
   {% endfor %}
+    <!-- Botón para mostrar mapa -->
+  <div class="d-flex justify-content-center my-4">
+    <button type="button" class="map-btn">
+      Mostrar Mapa
+    </button>
+  </div>
+    <hr>
+    <div class="row mb-5 gx-4 mx-3">
+
+        <!-- Sector 1: Alcance -->
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100">
+            <div class="header text-white">
+              <h6 class="mb-0">Alcance (km)</h6>
+            </div>
+            <div class="card-body">
+              <input type="number"
+                     class="form-control"
+                     placeholder="Valor actual: {{ e.alcance }}">
+            </div>
+          </div>
+        </div>
+      
+        <!-- Sector 2: Magnitud -->
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100">
+            <div class="header text-white">
+              <h6 class="mb-0">Magnitud</h6>
+            </div>
+            <div class="card-body">
+              <input type="number"
+                     step="0.1"
+                     class="form-control"
+                     placeholder="Valor actual: {{ e.magnitud }}">
+            </div>
+          </div>
+        </div>
+      
+        <!-- Sector 3: Origen de Generación -->
+        <div class="col-md-4">
+          <div class="card shadow-sm h-100">
+            <div class="header text-white">
+              <h6 class="mb-0">Origen de Generación</h6>
+            </div>
+            <div class="card-body">
+              <input type="text"
+                     class="form-control"
+                     placeholder="Valor actual: {{ e.origen_generacion }}">
+            </div>
+          </div>
+        </div>
+      
+      </div>
+      
+      <!-- Botón "Modificar" centrado, grande y sin funcionalidad -->
+      <div class="d-flex justify-content-center">
+        <button type="button"
+                class="map-btn">
+          Modificar
+        </button>
+      </div>
+      <hr>
+
+      <!-- Mensaje y botones de acción -->
+    <div class="mx-3 my-4 text-center">
+        <p class="h5 mb-3">Seleccionar acción:</p>
+        <div class="d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-success btn-lg shadow map-btn">
+            Confirmar evento
+        </button>
+        <button type="button" class="btn btn-danger btn-lg shadow map-btn">
+            Rechazar evento
+        </button>
+        <button type="button" class="btn btn-warning btn-lg shadow map-btn">
+            Solicitar revisión a experto
+        </button>
+        </div>
+    </div>
+    
+
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
