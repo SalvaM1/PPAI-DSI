@@ -20,7 +20,8 @@ def index():
 
 @app.route('/eventos')
 def mostrar_eventos():
-    eventos_pendientes = gestor.solicitar_seleccion()
+    eventos_pendientes = gestor.buscarSismosParaRevision()
+    eventos_ordenados = gestor.ordenarEventosPorFecha(eventos_pendientes)
     return interfaz.mostrar_eventos(eventos_pendientes)
 
 @app.route('/revisar', methods=['GET'])
@@ -39,10 +40,13 @@ def revisar_evento():
     if not evento:
         abort(404, f"No existe evento con id {evento_id}")
     
+
     # 3) Cambiar estado del evento a bloqueado creando un nuevo cambio estado para el evento que tiene el id de la uri, usando un metodo en la clase gestor
     gestor.bloquearEventoSismico(evento)   
     for serie in evento.series_temporales:
         serie.estacion = serie.esMiSismografo(sismografos)
+
+    sismograma= gestor.generarSismograma(evento)
 
     # 3) Renderizar la plantilla de detalle
     return render_template('evento_detalle.html', e=evento)
