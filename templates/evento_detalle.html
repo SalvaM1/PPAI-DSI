@@ -105,52 +105,29 @@
     </button>
   </div>
     <hr>
-    <div class="row mb-5 gx-4 mx-3">
+   <!-- Aquí envolvemos solo los inputs en un form sin botón de submit -->
+  <form id="form-rechazar" method="post" action="{{ url_for('rechazar') }}">
+    <input type="hidden" name="id" value="{{ e.id }}" id="evento-id">
 
-        <!-- Sector 1: Alcance -->
-        <div class="col-md-4">
-          <div class="card shadow-sm h-100">
-            <div class="header text-white">
-              <h6 class="mb-0">Alcance (km)</h6>
-            </div>
-            <div class="card-body">
-              <input type="number"
-                     class="form-control"
-                     placeholder="Valor actual: {{ e.alcance }}">
-            </div>
-          </div>
-        </div>
-      
-        <!-- Sector 2: Magnitud -->
-        <div class="col-md-4">
-          <div class="card shadow-sm h-100">
-            <div class="header text-white">
-              <h6 class="mb-0">Magnitud</h6>
-            </div>
-            <div class="card-body">
-              <input type="number"
-                     step="0.1"
-                     class="form-control"
-                     placeholder="Valor actual: {{ e.magnitud }}">
-            </div>
-          </div>
-        </div>
-      
-        <!-- Sector 3: Origen de Generación -->
-        <div class="col-md-4">
-          <div class="card shadow-sm h-100">
-            <div class="header text-white">
-              <h6 class="mb-0">Origen de Generación</h6>
-            </div>
-            <div class="card-body">
-              <input type="text"
-                     class="form-control"
-                     placeholder="Valor actual: {{ e.origen_generacion }}">
-            </div>
-          </div>
-        </div>
-      
+    <div class="row mb-5 gx-4 mx-3">
+      <div class="col-md-4">
+        <label>Alcance (km)</label>
+        <input id="input-alcance" name="alcance" type="number"
+               class="form-control" value="{{ e.alcance }}" readonly>
       </div>
+      <div class="col-md-4">
+        <label>Magnitud</label>
+        <input id="input-magnitud" name="magnitud" type="number" step="0.1"
+               class="form-control" value="{{ e.magnitud }}" readonly>
+      </div>
+      <div class="col-md-4">
+        <label>Origen de Generación</label>
+        <input id="input-origen" name="origen" type="text"
+               class="form-control" value="{{ e.origen_generacion }}" readonly>
+      </div>
+    </div>
+  </form>
+    
       
       <!-- Botón "Modificar" centrado, grande y sin funcionalidad -->
       <div class="d-flex justify-content-center">
@@ -162,23 +139,63 @@
       <hr>
 
       <!-- Mensaje y botones de acción -->
-    <div class="mx-3 my-4 text-center">
+      <div class="mx-3 my-4 text-center">
         <p class="h5 mb-3">Seleccionar acción:</p>
         <div class="d-flex justify-content-center gap-3">
-        <button type="button" class="btn btn-success btn-lg shadow map-btn">
-            Confirmar evento
-        </button>
-        <button type="button" class="btn btn-danger btn-lg shadow map-btn">
+          <button type="button" class="btn btn-success btn-lg">Confirmar evento</button>
+          <button type="button" id="btn-rechazar" class="btn btn-danger btn-lg">
             Rechazar evento
-        </button>
-        <button type="button" class="btn btn-warning btn-lg shadow map-btn">
-            Solicitar revisión a experto
-        </button>
+          </button>
+          <button type="button" class="btn btn-warning btn-lg">Solicitar revisión a experto</button>
         </div>
-    </div>
+      </div>
     
-
-
+      <!-- Contenedor para mensajes -->
+      <div id="rechazar-msg" class="text-center mt-3"></div>
+    
+      <!-- Bootstrap JS… -->
+      <script>
+        document.getElementById('btn-rechazar').addEventListener('click', async (e) => {
+          e.preventDefault();
+    
+          const id       = document.getElementById('evento-id').value;
+          const alcance  = document.getElementById('input-alcance').value;
+          const magnitud = document.getElementById('input-magnitud').value;
+          const origen   = document.getElementById('input-origen').value.trim();
+          const msgBox   = document.getElementById('rechazar-msg');
+    
+          // Validación en cliente
+          if (!alcance || !magnitud || !origen) {
+            msgBox.innerHTML = '<div class="alert alert-danger">Faltan datos de alcance, magnitud u origen.</div>';
+            return;
+          }
+    
+          // Preparamos y enviamos el formData
+          const formData = new FormData();
+          formData.append('id', id);
+          formData.append('alcance', alcance);
+          formData.append('magnitud', magnitud);
+          formData.append('origen', origen);
+    
+          try {
+            const resp = await fetch("{{ url_for('rechazar') }}", {
+              method: 'POST',
+              body: formData
+            });
+    
+            if (resp.ok) {
+              msgBox.innerHTML = '<div class="alert alert-success">Evento rechazado correctamente.</div>';
+            } else {
+              const errorText = await resp.text();
+              msgBox.innerHTML = `<div class="alert alert-danger">Error: ${errorText}</div>`;
+            }
+          } catch (err) {
+            console.error(err);
+            msgBox.innerHTML = '<div class="alert alert-danger">Error de red al rechazar el evento.</div>';
+          }
+        });
+      </script>
+    
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
