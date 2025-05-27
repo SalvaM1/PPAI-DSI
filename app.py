@@ -6,7 +6,7 @@ from modelos import *
 app = Flask(__name__)
 
 # Cargamos los eventos y creamos el gestor
-eventos = crear_eventos()
+eventos, estaciones, sismografos = crear_eventos()
 # Si crear_eventos no asigna id, hazlo aquí:
 for idx, e in enumerate(eventos, start=1):
     setattr(e, 'id', idx)
@@ -41,6 +41,8 @@ def revisar_evento():
     
     # 3) Cambiar estado del evento a bloqueado creando un nuevo cambio estado para el evento que tiene el id de la uri, usando un metodo en la clase gestor
     gestor.bloquearEventoSismico(evento)   
+    for serie in evento.series_temporales:
+        serie.estacion = serie.esMiSismografo(sismografos)
 
     # 3) Renderizar la plantilla de detalle
     return render_template('evento_detalle.html', e=evento)

@@ -112,6 +112,34 @@ class SerieTemporal:
         self.frecuencia_muestreo = frecuencia_muestreo
         self.muestras = muestras  # lista de MuestraSismica
 
+    def esMiSismografo(self, sismografos):
+        for sismografo in sismografos:
+            if self in sismografo.series_temporales:
+                return sismografo.estacion_sismologica
+        return None
+
+
+
+class Sismografo:
+    def __init__(self, fechaAdquisicion, id, nroSerie, estacionSismologica, seriesTemporales=[]):   
+        self.fecha_adquisicion = fechaAdquisicion
+        self.id = id
+        self.numero_serie = nroSerie
+        self.series_temporales = seriesTemporales # lista de SerieTemporal
+        self.estacion_sismologica = estacionSismologica # instancia de EstacionSismologica
+        
+
+class EstacionSismologica:
+    def __init__(self, codigo, documentoCertificacion, fechaSolicitudCertificacion, latitud, longitud, nombre, nroCertificacion):
+        self.codigo = codigo
+        self.documento_certificacion = documentoCertificacion
+        self.fecha_solicitud_certificacion = fechaSolicitudCertificacion
+        self.latitud = latitud
+        self.longitud = longitud
+        self.nombre = nombre
+        self.numero_certificacion = nroCertificacion
+
+
 
 class Interfaz:
     def mostrar_eventos(self, eventos):

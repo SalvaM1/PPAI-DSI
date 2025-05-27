@@ -51,7 +51,7 @@
   <!-- Series temporales -->
   {% for serie in e.series_temporales %}
     <h5 class="mt-4 mb-2">
-      Serie Temporal {{ loop.index }} – Inicio: {{ serie.fecha_hora_inicio_muestras }}
+      Serie Temporal {{ loop.index }} – Inicio: {{ serie.fecha_hora_inicio_muestras }} - Estación meteorologica: {{ serie.estacion.nombre }}
     </h5>
     <div class="table-responsive mb-5">
       <table class="table table-sm table-striped align-middle">

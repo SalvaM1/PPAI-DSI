@@ -8,7 +8,9 @@ from modelos import (
     SerieTemporal,
     MuestraSismica,
     DetalleMuestraSismica,
-    TipoDeDato
+    TipoDeDato,
+    Sismografo,
+    EstacionSismologica
 )
 
 
@@ -117,4 +119,46 @@ def crear_eventos():
         # Asignar la lista de series al evento
         evento.series_temporales = series
 
-    return eventos
+        estaciones = [
+        EstacionSismologica(
+            codigo='ST-001',
+            documentoCertificacion='cert_001.pdf',
+            fechaSolicitudCertificacion=datetime(2024, 1, 10),
+            latitud=-34.61,
+            longitud=-58.38,
+            nombre='Estación Central Buenos Aires',
+            nroCertificacion='C-BA-001'
+        ),
+        EstacionSismologica(
+            codigo='ST-002',
+            documentoCertificacion='cert_002.pdf',
+            fechaSolicitudCertificacion=datetime(2024, 2, 5),
+            latitud=-33.92,
+            longitud=-60.25,
+            nombre='Estación Rosario Norte',
+            nroCertificacion='C-RN-002'
+        ),
+        EstacionSismologica(
+            codigo='ST-003',
+            documentoCertificacion='cert_003.pdf',
+            fechaSolicitudCertificacion=datetime(2024, 3, 15),
+            latitud=-35.05,
+            longitud=-57.95,
+            nombre='Estación La Plata Sur',
+            nroCertificacion='C-LP-003'
+        )
+    ]
+
+    # ---- 7) Crear sismógrafos y asignarles series temporales y estaciones ----
+    sismografos = []
+    for i, evento in enumerate(eventos):
+        sismografo = Sismografo(
+            fechaAdquisicion=datetime(2023, 12, 1 + i),  # fechas distintas
+            id=i + 1,
+            nroSerie=f"SN-{1000 + i}",
+            estacionSismologica=estaciones[i],  # uno a uno con estaciones
+            seriesTemporales=evento.series_temporales  # ya están generadas
+        )
+        sismografos.append(sismografo)
+
+    return eventos, estaciones, sismografos
