@@ -36,3 +36,6 @@ class Gestor:
         evento.agregar_cambio_estado(Estado('sismo', 'rechazado'))
         print(f"[Gestor] Evento {evento.id} ahora en estado: {evento.obtener_estado_actual().nombre_estado}")
 
+    
+    def buscar_usuario(self, sesion):
+        return sesion.buscarUsuario()
