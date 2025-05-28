@@ -18,3 +18,7 @@ class Gestor:
         """
         estado_bloqueado = Estado('sismo', 'bloqueado')
         evento.agregar_cambio_estado(estado_bloqueado)
+
+    
+    def buscar_usuario(self, sesion):
+        return sesion.buscarUsuario()

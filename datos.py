@@ -8,7 +8,9 @@ from modelos import (
     SerieTemporal,
     MuestraSismica,
     DetalleMuestraSismica,
-    TipoDeDato
+    TipoDeDato,
+    Sesion,
+    Usuario
 )
 
 
@@ -118,3 +120,19 @@ def crear_eventos():
         evento.series_temporales = series
 
     return eventos
+
+def crear_usuarios():
+    usuarios = [
+        Usuario("Juan", "actual"),
+        Usuario("Ana", "inactivo"),
+        Usuario("Pedro", "actual"),
+    ]
+    return usuarios
+
+def crear_sesiones(usuarios):
+    # Ejemplo: una sesión con todos los usuarios, otra con solo dos
+    sesiones = [
+        Sesion([usuarios[0], usuarios[1]], id=1),
+        Sesion([usuarios[2]], id=2)
+    ]
+    return sesiones
