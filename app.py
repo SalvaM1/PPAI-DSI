@@ -1,9 +1,15 @@
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, flash, redirect, url_for
 from datos import crear_eventos
 from gestor import Gestor
 from modelos import *
+import os
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get('SECRET_KEY', 'tu_clave_secreta_aquí')  
+
+# … resto de tu código …
+
 
 # Cargamos los eventos y creamos el gestor
 eventos, estaciones, sismografos = crear_eventos()
@@ -50,5 +56,6 @@ def revisar_evento():
 
     # 3) Renderizar la plantilla de detalle
     return render_template('evento_detalle.html', e=evento)
+
 if __name__ == '__main__':
     app.run(debug=True)
