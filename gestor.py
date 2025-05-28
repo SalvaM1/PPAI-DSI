@@ -32,3 +32,6 @@ class Gestor:
             raise ValueError("Faltan datos: alcance, magnitud u origen")
         evento.agregar_cambio_estado(Estado('sismo', 'rechazado'))
         print(f"[Gestor] Evento {evento.id} ahora en estado: {evento.obtener_estado_actual().nombre_estado}")
+
+    def generarSismograma(self, evento):
+        return "sismograma" # Aca se llamaria al caso de uso para generar el sismograma
