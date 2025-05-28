@@ -1,5 +1,7 @@
 # modelos.py
 from datetime import datetime
+from flask import render_template
+
 
 class EventoSismico:
     def __init__(self, id, fecha_hora_fin, fecha_hora_ocurrencia,
@@ -146,7 +148,13 @@ class Interfaz:
         from flask import render_template
         return render_template('eventos.html', eventos=eventos)
 
-
+    def habilitarVentana(self):
+        return render_template('index.html')
+    
+    def mostrarEventoSeleccionado(self, evento, usuarios_activos):
+        return render_template('evento_detalle.html', e=evento, usuario=usuarios_activos)
+    
+    
 class Usuario:
     def __init__(self, nombre, estado):
         self.nombre = nombre

@@ -23,7 +23,7 @@ interfaz = Interfaz()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return interfaz.habilitarVentana()
 
 @app.route('/eventos')
 def mostrar_eventos():
@@ -58,19 +58,17 @@ def revisar_evento():
     # 4) Obtener usuario(s) de la sesión (ejemplo: la primera sesión)
     sesion = sesiones[0]  # O busca la sesión correspondiente
     usuarios_activos = gestor.buscar_usuario(sesion)
-    #Intento de ver porque no anda
-    #print("Usuarios activos:", [u.nombre for u in usuarios_activos]) 
-    # 5) Renderizar la plantilla de detalle
-    return render_template('evento_detalle.html', e=evento, usuario=usuarios_activos)
+
+
+    return interfaz.mostrarEventoSeleccionado(evento, usuarios_activos)
 
 
 @app.route('/rechazar', methods=['POST'], endpoint='rechazar')
 def rechazar_evento():
-    # 1) Leer id y campos
     evento_id = int(request.form['id'])
-    alcance   = request.form.get('alcance')
-    magnitud  = request.form.get('magnitud')
-    origen    = request.form.get('origen', '').strip()
+
+    # Obtenés los datos directamente desde el gestor
+    alcance, magnitud, origen = gestor.buscarDatosSismo(evento_id)
 
     # 2) Buscar evento
     evento = next((e for e in gestor.eventos if e.id == evento_id), None)
@@ -82,14 +80,13 @@ def rechazar_evento():
         flash("Faltan datos de alcance, magnitud u origen.", "danger")
         return redirect(url_for('revisar_evento', id=evento_id))
 
-    # (Opcional) puedes transformar tipos si los usas de forma numérica:
     evento.alcance   = float(alcance)
     evento.magnitud  = float(magnitud)
     evento.origen_generacion = origen
 
     # 4) Rechazar con tu método
     try:
-        gestor.rechazarEventoSismico(evento)
+        gestor.actualizarEstadoEventoRechazado(evento)
         flash("Evento rechazado ✅", "success")
     except ValueError as e:
         flash(str(e), "danger")

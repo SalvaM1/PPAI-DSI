@@ -14,9 +14,6 @@ class Gestor:
         return sorted(eventos, key=lambda e: e.fecha_hora_ocurrencia)
     
     def bloquearEventoSismico(self, evento):
-        """
-        Simplemente pasamos el Estado a la lista de cambios del evento.
-        """
         estado_bloqueado = Estado('sismo', 'bloqueado')
         evento.agregar_cambio_estado(estado_bloqueado)
 
@@ -30,7 +27,7 @@ class Gestor:
             bool(evento.origen_generacion and evento.origen_generacion.strip())
         ])
 
-    def rechazarEventoSismico(self, evento):
+    def actualizarEstadoEventoRechazado(self, evento):
         if not self.validarDatosSismo(evento):
             raise ValueError("Faltan datos: alcance, magnitud u origen")
         evento.agregar_cambio_estado(Estado('sismo', 'rechazado'))
@@ -39,3 +36,10 @@ class Gestor:
     
     def buscar_usuario(self, sesion):
         return sesion.buscarUsuario()
+    
+    def buscarDatosSismo(self, evento_id):
+        evento = next((e for e in self.eventos if getattr(e, 'id', None) == evento_id), None)
+        if evento:
+            return evento.alcance, evento.magnitud, evento.origen_generacion
+        else:
+            return None, None, None
