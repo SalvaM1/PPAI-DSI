@@ -145,3 +145,34 @@ class Interfaz:
     def mostrar_eventos(self, eventos):
         from flask import render_template
         return render_template('eventos.html', eventos=eventos)
+
+
+class Usuario:
+    def __init__(self, nombre, estado):
+        self.nombre = nombre
+        self.estado = estado
+    
+    def esActual(self):
+        return self.estado == "actual"
+
+
+
+
+class Sesion:
+    def __init__(self, usuarios, id):
+        self.usuarios = usuarios  # instancia de Usuario
+        self.id = id
+        
+
+    def buscarUsuario(self):
+        # Devuelve el primer usuario activo
+        for usuario in self.usuarios:
+            if usuario.esActual():
+                return usuario
+        return None
+    
+    def es_usuario_actual(self):
+        return any(usuarios.esActual() for usuarios in self.usuarios)
+    
+
+    

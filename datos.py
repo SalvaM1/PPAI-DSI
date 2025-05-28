@@ -10,7 +10,9 @@ from modelos import (
     DetalleMuestraSismica,
     TipoDeDato,
     Sismografo,
-    EstacionSismologica
+    EstacionSismologica,
+    Sesion,
+    Usuario
 )
 
 
@@ -162,3 +164,20 @@ def crear_eventos():
         sismografos.append(sismografo)
 
     return eventos, estaciones, sismografos
+
+
+def crear_usuarios():
+    usuarios = [
+        Usuario("Juan", "actual"),
+        Usuario("Ana", "inactivo"),
+        Usuario("Pedro", "actual"),
+    ]
+    return usuarios
+
+def crear_sesiones(usuarios):
+    # Ejemplo: una sesión con todos los usuarios, otra con solo dos
+    sesiones = [
+        Sesion([usuarios[0], usuarios[1]], id=1),
+        Sesion([usuarios[2]], id=2)
+    ]
+    return sesiones

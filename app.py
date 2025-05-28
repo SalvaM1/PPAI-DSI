@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, abort, flash, redirect, url_for
-from datos import crear_eventos
+from datos import crear_eventos, crear_usuarios, crear_sesiones
 from gestor import Gestor
 from modelos import *
 import os
+
 
 app = Flask(__name__)
 
@@ -10,6 +11,9 @@ app.secret_key = os.environ.get('SECRET_KEY', 'tu_clave_secreta_aquí')
 
 # Cargamos los eventos y creamos el gestor
 eventos, estaciones, sismografos = crear_eventos()
+usuarios = crear_usuarios()
+sesiones = crear_sesiones(usuarios)
+
 # Si crear_eventos no asigna id, hazlo aquí:
 for idx, e in enumerate(eventos, start=1):
     setattr(e, 'id', idx)
@@ -51,8 +55,13 @@ def revisar_evento():
 
     sismograma= gestor.generarSismograma(evento)
 
-    # 3) Renderizar la plantilla de detalle
-    return render_template('evento_detalle.html', e=evento)
+    # 4) Obtener usuario(s) de la sesión (ejemplo: la primera sesión)
+    sesion = sesiones[0]  # O busca la sesión correspondiente
+    usuarios_activos = gestor.buscar_usuario(sesion)
+    #Intento de ver porque no anda
+    #print("Usuarios activos:", [u.nombre for u in usuarios_activos]) 
+    # 5) Renderizar la plantilla de detalle
+    return render_template('evento_detalle.html', e=evento, usuario=usuarios_activos)
 
 
 @app.route('/rechazar', methods=['POST'], endpoint='rechazar')
