@@ -50,6 +50,5 @@ def revisar_evento():
 
     # 3) Renderizar la plantilla de detalle
     return render_template('evento_detalle.html', e=evento)
-
 if __name__ == '__main__':
     app.run(debug=True)
