@@ -160,7 +160,7 @@
         </form>
 
         <div class="action-bar">
-            <a class="primary-btn" th:href="@{/eventos}">Confirmar evento</a>
+            <button type="button" id="btn-confirmar" class="primary-btn">Confirmar evento</button>
             <button type="button" id="btn-rechazar" class="tertiary-btn">Rechazar evento</button>
             <button type="button" class="ghost-btn">Solicitar revisión a experto</button>
         </div>
@@ -177,8 +177,17 @@
     document.addEventListener('DOMContentLoaded', () => {
         const rechazarUrl = /*[[@{/eventos/rechazar}]]*/ '';
         const btnRechazar = document.getElementById('btn-rechazar');
+        const btnConfirmar = document.getElementById('btn-confirmar');
         if (!btnRechazar) {
             return;
+        }
+        const msgBox = document.getElementById('rechazar-msg');
+
+        if (btnConfirmar) {
+            btnConfirmar.addEventListener('click', (event) => {
+                event.preventDefault();
+                msgBox.innerHTML = '<div class="alert alert-primary">Evento confirmado correctamente.</div>';
+            });
         }
         btnRechazar.addEventListener('click', async (event) => {
             event.preventDefault();
@@ -186,7 +195,9 @@
             const alcance = document.getElementById('input-alcance').value;
             const magnitud = document.getElementById('input-magnitud').value;
             const origen = document.getElementById('input-origen').value.trim();
-            const msgBox = document.getElementById('rechazar-msg');
+            if (!msgBox) {
+                return;
+            }
 
             if (!alcance || !magnitud || !origen) {
                 msgBox.innerHTML = '<div class="alert alert-danger">Faltan datos de alcance, magnitud u origen.</div>';
