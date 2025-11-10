@@ -8,59 +8,79 @@
     <title>Eventos Sísmicos</title>
 </head>
 <body>
-<h1>Estación Sismológica</h1>
-<hr>
+<div class="app-shell">
+    <header class="app-header">
+        <h1 class="app-header__title">Eventos sísmicos autodetectados</h1>
+        <p class="app-header__subtitle">
+            Revisá los eventos identificados por la red de sismógrafos y asigná las acciones necesarias para su
+            validación definitiva.
+        </p>
+    </header>
 
-<div class="container">
-    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
-    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+    <main class="app-content">
+        <div th:if="${error}" class="alert alert-danger alert-modern" role="alert" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success alert-modern" role="alert" th:text="${success}"></div>
 
-    <h2 class="text-center mb-4">Eventos Sísmicos Pendientes de Revisión</h2>
+        <section th:if="${#lists.isEmpty(eventos)}" class="empty-state">
+            <div class="empty-state__icon">🌎</div>
+            <h2 class="empty-state__title">Sin pendientes por el momento</h2>
+            <p class="empty-state__text">
+                No se registraron nuevos eventos para revisión manual. Volvé más tarde o fortalecé la vigilancia en
+                tus estaciones críticas.
+            </p>
+            <a class="ghost-btn mt-3" th:href="@{/}">
+                Volver al inicio
+            </a>
+        </section>
 
-    <div th:if="${#lists.isEmpty(eventos)}">
-        <p class="text-center">No hay eventos pendientes para revisar.</p>
-    </div>
+        <section th:if="${!#lists.isEmpty(eventos)}" class="card-grid">
+            <article class="event-card" th:each="evento : ${eventos}">
+                <span class="event-card__tag">
+                    Evento #<span th:text="${evento.id}"></span>
+                </span>
+                <h2 class="event-card__title" th:text="${evento.clasificacion}">Clasificación</h2>
+                <div class="event-card__meta">
+                    <span>
+                        <strong>Fecha y hora:</strong>
+                        <span th:text="${#temporals.format(evento.fechaHoraOcurrencia, 'dd MMM yyyy · HH:mm')}"></span>
+                    </span>
+                    <span>
+                        <strong>Epicentro:</strong>
+                        <span th:text="${evento.latitudEpicentro}"></span>,
+                        <span th:text="${evento.longitudEpicentro}"></span>
+                    </span>
+                    <span>
+                        <strong>Hipocentro:</strong>
+                        <span th:text="${evento.latitudHipocentro}"></span>,
+                        <span th:text="${evento.longitudHipocentro}"></span>
+                    </span>
+                    <span>
+                        <strong>Magnitud estimada:</strong>
+                        <span th:text="${evento.valorMagnitud}"></span>
+                    </span>
+                </div>
+                <div class="event-card__actions">
+                    <div class="d-flex flex-column">
+                        <small class="text-muted">Confirmar detalles y preparar informe</small>
+                        <form th:action="@{/eventos/revisar}" method="get">
+                            <input type="hidden" name="id" th:value="${evento.id}">
+                            <button type="submit" class="primary-btn">
+                                Revisar evento
+                            </button>
+                        </form>
+                    </div>
+                    <a class="ghost-btn" th:href="@{/}">
+                        Volver
+                    </a>
+                </div>
+            </article>
+        </section>
+    </main>
 
-    <div th:if="${!#lists.isEmpty(eventos)}" class="table-responsive">
-        <table class="table table-bordered table-striped mx-auto" style="width:80%;">
-            <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Fecha y Hora</th>
-                <th>Epicentro (lat, long)</th>
-                <th>Hipocentro (lat, long)</th>
-                <th>Magnitud</th>
-                <th>Acción</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="evento : ${eventos}">
-                <td th:text="${evento.id}"></td>
-                <td th:text="${#temporals.format(evento.fechaHoraOcurrencia, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                <td>
-                    <span th:text="${evento.latitudEpicentro}"></span>,
-                    <span th:text="${evento.longitudEpicentro}"></span>
-                </td>
-                <td>
-                    <span th:text="${evento.latitudHipocentro}"></span>,
-                    <span th:text="${evento.longitudHipocentro}"></span>
-                </td>
-                <td>
-                    <span th:text="${evento.valorMagnitud}"></span>
-                    (<span th:text="${evento.clasificacion}"></span>)
-                </td>
-                <td class="text-center">
-                    <form th:action="@{/eventos/revisar}" method="get">
-                        <input type="hidden" name="id" th:value="${evento.id}">
-                        <button type="submit" class="btn btn-primary btn-sm">Revisar Evento</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <footer class="app-footer">
+        Sistema de Procesamiento y Análisis Sísmico · Información confidencial
+    </footer>
 </div>
-
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

@@ -7,130 +7,171 @@
     <link th:href="@{/css/detalle.css}" rel="stylesheet">
     <title>Detalle de Evento Sísmico</title>
 </head>
-<body class="p-4">
-
-<h1 class="mb-3">Evento Sísmico Seleccionado</h1>
-<hr>
-
-<div class="mb-3" th:if="${usuario != null}">
-    <strong>Analista encargado:</strong>
-    <span th:text="${usuario.nombre}"></span>
-</div>
-
-<div class="alert alert-success alert-dismissible fade show mx-3 mb-4 position-relative" role="alert"
-     th:if="${sismograma}">
-    <strong th:text="'Sismograma generado: ' + ${sismograma}"></strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-</div>
-
-<div class="mb-5">
-    <h5 class="mb-3">Datos Sísmicos</h5>
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <tr>
-                <th>Alcance</th>
-                <td th:text="${evento.alcance}"></td>
-            </tr>
-            <tr>
-                <th>Clasificación</th>
-                <td th:text="${evento.clasificacion}"></td>
-            </tr>
-            <tr>
-                <th>Origen</th>
-                <td th:text="${evento.origenGeneracion}"></td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-<div th:each="serie, serieStat : ${evento.seriesTemporales}">
-    <h5 class="mt-4 mb-2">
-        <span th:text="'Serie Temporal ' + ${serieStat.index + 1}"></span>
-        –
-        <span th:text="'Inicio: ' + ${#temporals.format(serie.fechaHoraInicioMuestras, 'yyyy-MM-dd HH:mm:ss')}"></span>
-        –
-        <span th:text="'Estación: ' + ${serie.estacion != null ? serie.estacion.nombre : 'sin asignar'}"></span>
-    </h5>
-    <div class="table-responsive mb-5">
-        <table class="table table-sm table-striped align-middle">
-            <thead>
-            <tr>
-                <th>Número de muestra</th>
-                <th>Instante (s)</th>
-                <th>Velocidad de onda (m/s)</th>
-                <th>Frecuencia (Hz)</th>
-                <th>Longitud de onda (m)</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="muestra, muestraStat : ${serie.muestras}">
-                <td th:text="${muestraStat.index + 1}"></td>
-                <td th:text="${T(java.time.Duration).between(serie.fechaHoraInicioMuestras, muestra.fechaHoraMuestra).seconds}"></td>
-                <td>
-                    <span th:each="detalle : ${muestra.detalles}"
-                          th:if="${detalle.tipoDeDato.denominacion == 'velocidad de onda'}"
-                          th:text="${detalle.valor}"></span>
-                </td>
-                <td>
-                    <span th:each="detalle : ${muestra.detalles}"
-                          th:if="${detalle.tipoDeDato.denominacion == 'frecuencia'}"
-                          th:text="${detalle.valor}"></span>
-                </td>
-                <td>
-                    <span th:each="detalle : ${muestra.detalles}"
-                          th:if="${detalle.tipoDeDato.denominacion == 'longitud'}"
-                          th:text="${detalle.valor}"></span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="d-flex justify-content-center my-4">
-    <button type="button" class="map-btn">Mostrar Mapa</button>
-    </div>
-
-<hr>
-
-<form id="form-rechazar" method="post" th:action="@{/eventos/rechazar}">
-    <input type="hidden" name="id" id="evento-id" th:value="${evento.id}">
-
-    <div class="row mb-5 gx-4 mx-3">
-        <div class="col-md-4">
-            <label>Alcance (km)</label>
-            <input id="input-alcance" name="alcance" type="number" class="form-control"
-                   th:value="${evento.alcance}" readonly>
+<body>
+<div class="detalle-shell">
+    <header class="detalle-hero">
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-4">
+            <div class="detalle-hero__heading">
+                <h1>Detalle del evento sísmico</h1>
+                <p>
+                    Explorá los datos recolectados por el sismógrafo y decidí las acciones a seguir. Toda la
+                    información se encuentra sincronizada con la red de monitoreo.
+                </p>
+                <div th:if="${usuario != null}" class="tag">
+                    Analista asignado: <span th:text="${usuario.nombre}"></span>
+                </div>
+            </div>
+            <div class="detalle-header-actions">
+                <a class="ghost-btn" th:href="@{/eventos}">Volver a eventos</a>
+                <button type="button" class="ghost-btn map-btn">Mostrar mapa</button>
+            </div>
         </div>
-        <div class="col-md-4">
-            <label>Magnitud</label>
-            <input id="input-magnitud" name="magnitud" type="number" step="0.1" class="form-control"
-                   th:value="${evento.magnitud}" readonly>
+    </header>
+
+    <main class="detalle-content">
+        <div class="alert alert-success alert-modern alert-dismissible fade show" role="alert"
+             th:if="${sismograma}">
+            <strong th:text="'Sismograma generado: ' + ${sismograma}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
-        <div class="col-md-4">
-            <label>Origen de Generación</label>
-            <input id="input-origen" name="origen" type="text" class="form-control"
-                   th:value="${evento.origenGeneracion}" readonly>
+
+        <section class="summary-card">
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span>Clasificación</span>
+                    <strong th:text="${evento.clasificacion}">Tectónico</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Origen</span>
+                    <strong th:text="${evento.origenGeneracion}">Autodetectado</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Magnitud</span>
+                    <strong>
+                        <span th:text="${evento.magnitud}"></span>
+                        ML
+                    </strong>
+                </div>
+                <div class="summary-item">
+                    <span>Alcance estimado</span>
+                    <strong>
+                        <span th:text="${evento.alcance}"></span> km
+                    </strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="table-wrapper">
+            <h2 class="h5 mb-3">Información de ubicación</h2>
+            <table>
+                <tbody>
+                <tr>
+                    <th scope="row">Fecha y hora de ocurrencia</th>
+                    <td th:text="${#temporals.format(evento.fechaHoraOcurrencia, 'dd/MM/yyyy HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Epicentro</th>
+                    <td>
+                        <span th:text="${evento.latitudEpicentro}"></span>,
+                        <span th:text="${evento.longitudEpicentro}"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Hipocentro</th>
+                    <td>
+                        <span th:text="${evento.latitudHipocentro}"></span>,
+                        <span th:text="${evento.longitudHipocentro}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section th:each="serie, serieStat : ${evento.seriesTemporales}">
+            <div class="serie-heading">
+                <h3 class="h5 mb-0">
+                    Serie temporal <span th:text="${serieStat.index + 1}"></span>
+                </h3>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="tag">
+                        Inicio: <span th:text="${#temporals.format(serie.fechaHoraInicioMuestras, 'dd/MM/yyyy HH:mm')}"></span>
+                    </span>
+                    <span class="tag">
+                        Estación:
+                        <span th:text="${serie.estacion != null ? serie.estacion.nombre : 'Sin asignar'}"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Instante (s)</th>
+                        <th>Velocidad de onda (m/s)</th>
+                        <th>Frecuencia (Hz)</th>
+                        <th>Longitud de onda (m)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="muestra, muestraStat : ${serie.muestras}">
+                        <td th:text="${muestraStat.index + 1}"></td>
+                        <td th:text="${T(java.time.Duration).between(serie.fechaHoraInicioMuestras, muestra.fechaHoraMuestra).seconds}"></td>
+                        <td>
+                            <span th:each="detalle : ${muestra.detalles}"
+                                  th:if="${detalle.tipoDeDato.denominacion == 'velocidad de onda'}"
+                                  th:text="${detalle.valor}"></span>
+                        </td>
+                        <td>
+                            <span th:each="detalle : ${muestra.detalles}"
+                                  th:if="${detalle.tipoDeDato.denominacion == 'frecuencia'}"
+                                  th:text="${detalle.valor}"></span>
+                        </td>
+                        <td>
+                            <span th:each="detalle : ${muestra.detalles}"
+                                  th:if="${detalle.tipoDeDato.denominacion == 'longitud'}"
+                                  th:text="${detalle.valor}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <form id="form-rechazar" method="post" th:action="@{/eventos/rechazar}" class="mt-4">
+            <input type="hidden" name="id" id="evento-id" th:value="${evento.id}">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <label class="form-label text-muted text-uppercase small">Alcance (km)</label>
+                    <input id="input-alcance" name="alcance" type="number" class="form-control form-control-lg"
+                           th:value="${evento.alcance}" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted text-uppercase small">Magnitud</label>
+                    <input id="input-magnitud" name="magnitud" type="number" step="0.1" class="form-control form-control-lg"
+                           th:value="${evento.magnitud}" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted text-uppercase small">Origen de generación</label>
+                    <input id="input-origen" name="origen" type="text" class="form-control form-control-lg"
+                           th:value="${evento.origenGeneracion}" readonly>
+                </div>
+            </div>
+        </form>
+
+        <div class="action-bar">
+            <a class="primary-btn" th:href="@{/eventos}">Confirmar evento</a>
+            <button type="button" id="btn-rechazar" class="tertiary-btn">Rechazar evento</button>
+            <button type="button" class="ghost-btn">Solicitar revisión a experto</button>
         </div>
-    </div>
-</form>
 
-<div class="d-flex justify-content-center">
-    <button type="button" class="map-btn">Modificar</button>
+        <div id="rechazar-msg" class="text-center mt-3"></div>
+    </main>
+
+    <footer class="detalle-footer">
+        Sistema de Procesamiento y Análisis Sísmico · Información confidencial
+    </footer>
 </div>
-
-<hr>
-
-<div class="mx-3 my-4 text-center">
-    <p class="h5 mb-3">Seleccionar acción:</p>
-    <div class="d-flex justify-content-center gap-3">
-        <a class="btn btn-success btn-lg" th:href="@{/eventos}">Confirmar evento</a>
-        <button type="button" id="btn-rechazar" class="btn btn-danger btn-lg">Rechazar evento</button>
-        <button type="button" class="btn btn-warning btn-lg">Solicitar revisión a experto</button>
-    </div>
-</div>
-
-<div id="rechazar-msg" class="text-center mt-3"></div>
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', () => {

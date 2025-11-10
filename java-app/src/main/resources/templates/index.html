@@ -8,11 +8,49 @@
     <title>Estación Sismológica</title>
 </head>
 <body>
-<h1>Estación Sismológica</h1>
-<hr>
-<div class="text-center">
-    <a id="botonRevisionManual" class="btn btn-primary" th:href="@{/eventos}">Registrar Resultado</a>
-    <a class="btn btn-link" th:href="@{/eventos}">Ver eventos</a>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-header__title">Centro de Monitoreo Sísmico</div>
+        <p class="app-header__subtitle">
+            Supervisá la actividad sísmica detectada automáticamente y coordiná las acciones de análisis, revisión
+            y reporte con un panel renovado y accesible.
+        </p>
+    </header>
+
+    <main class="app-content">
+        <section class="action-deck">
+            <article class="action-card">
+                <h2 class="action-card__title">Revisión pendiente</h2>
+                <p class="action-card__text">
+                    Accedé al listado actualizado de eventos autodetectados que requieren tu confirmación y priorizá
+                    la asignación de analistas para cada caso.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="primary-btn" th:href="@{/eventos}">
+                        Ir a eventos
+                    </a>
+                    <a class="ghost-btn" th:href="@{/eventos}">
+                        Ver historial
+                    </a>
+                </div>
+            </article>
+
+            <article class="action-card">
+                <h2 class="action-card__title">Registro y seguimiento</h2>
+                <p class="action-card__text">
+                    Revisá la información recolectada por los sismógrafos conectados, evaluá su estado y prepará los
+                    próximos pasos para la comunicación oficial.
+                </p>
+                <a class="primary-btn" th:href="@{/eventos}">
+                    Registrar resultado
+                </a>
+            </article>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        Sistema de Procesamiento y Análisis Sísmico · Información confidencial
+    </footer>
 </div>
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js}"></script>
 </body>

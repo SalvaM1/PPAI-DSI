@@ -2,6 +2,9 @@
 /Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/Application.java
 /Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/controllers/EventosController.java
 /Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/data/DataFactory.java
+/Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/iterators/IAgregado.java
+/Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/iterators/IteradorEventoSismico.java
+/Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/iterators/iIterador.java
 /Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/models/AlcanceSismo.java
 /Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/models/CambioEstado.java
 /Users/santiagoholtz/Documents/TPDSIFINAL/PPAI-DSI/java-app/src/main/java/com/ppaidsi/models/ClasificacionSismo.java
