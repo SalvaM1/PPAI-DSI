@@ -144,5 +144,12 @@ public class EventoSismico {
     public List<CambioEstado> getCambiosEstado() {
         return Collections.unmodifiableList(cambiosEstado);
     }
+
+    public EventoSismico obtenerDatosSismos() {
+        // Retorna el mismo evento con sus datos disponibles
+        // Según el diagrama de secuencia, este método obtiene los datos del evento
+        return this;
+    }
 }
+
 

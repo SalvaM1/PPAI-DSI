@@ -27,7 +27,7 @@ public class EventosController {
 
     @GetMapping("/eventos")
     public String listarEventos(Model model) {
-        List<EventoSismico> pendientes = gestorSismos.buscarSismosParaRevision();
+        List<EventoSismico> pendientes = gestorSismos.regRevManual();
         model.addAttribute("eventos", gestorSismos.ordenarEventosPorFecha(pendientes));
         return "eventos";
     }

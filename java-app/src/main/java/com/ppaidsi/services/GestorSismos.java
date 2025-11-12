@@ -32,6 +32,31 @@ public class GestorSismos implements IAgregado {
         return new IteradorEventoSismico(elementos, filtro);
     }
 
+    public List<EventoSismico> regRevManual() {
+        var elementos = buscarSismosParaRevisar();
+        var filtro = new Object[]{ESTADO_PENDIENTE_REVISION};
+        var iterador = crearIterador(elementos.toArray(), filtro);
+        var eventos = new ArrayList<EventoSismico>();
+        
+        iterador.primero();
+        while (!iterador.haFinalizado()) {
+            Object actual = iterador.elementoActual();
+            if (actual instanceof EventoSismico evento) {
+                if (iterador.comprobarFiltro(filtro)) {
+                    evento.obtenerDatosSismos();
+                    eventos.add(evento);
+                }
+            }
+            iterador.siguiente();
+        }
+        
+        return eventos;
+    }
+
+    public List<EventoSismico> buscarSismosParaRevisar() {
+        return new ArrayList<>(eventos);
+    }
+
     public List<EventoSismico> buscarSismosParaRevision() {
         var iterador = crearIterador(eventos.toArray(), new Object[]{ESTADO_PENDIENTE_REVISION});
         var resultado = new ArrayList<EventoSismico>();
@@ -85,4 +110,5 @@ public class GestorSismos implements IAgregado {
                 .findFirst();
     }
 }
+
 
